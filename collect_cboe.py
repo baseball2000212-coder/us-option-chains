@@ -3,6 +3,7 @@ CBOE 지연 옵션 체인 수집기 — 정해진 시각(ET)에 5종목 전체 �
   python collect_cboe.py am    → 9:45, 10:45, 11:45, 12:45 ET
   python collect_cboe.py pm    → 13:45, 14:45, 15:45, 16:15, 16:45 ET
   python collect_cboe.py eod   → 즉시 1회 (장 마감 후)
+  python collect_cboe.py test  → 저장 확인용: IBIT 1종목만 data/_test/ 에 저장
 잡을 일찍 띄우고 목표 시각까지 기다렸다가 받는다 (GitHub Actions 예약 실행은 수십 분 늦을 수 있어서).
 목표 시각은 ET로 계산하므로 서머타임은 자동 처리된다.
 
@@ -139,6 +140,10 @@ def main():
         return
     if mode == "eod":
         sys.exit(1 if collect("eod") else 0)
+    if mode == "test":
+        df = fetch("IBIT"); buf = io.BytesIO(); df.to_csv(buf, index=False, compression={"method": "gzip", "mtime": 0})
+        save({f"data/_test/IBIT_{now:%Y%m%d_%H%M%S}.csv.gz": buf.getvalue()}, f"test {now:%Y-%m-%d %H:%M} ET")
+        return
     total_fails = 0
     for h, mnt in SCHEDULE[mode]:
         target = now.replace(hour=h, minute=mnt, second=0, microsecond=0)

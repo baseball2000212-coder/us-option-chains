@@ -8,7 +8,7 @@ on:
         required: true
         default: "am"
         type: choice
-        options: [am, pm, eod]
+        options: [am, pm, eod, test]
   # 외부 크론(cron-job.org)이 정시에 workflow_dispatch로 깨우고, 아래 예약은 백업 (놓친 회차는 스크립트가 건너뜀)
   schedule:
     - cron: "0 13 * * 1-5"     # am (EDT 9:00 / EST 8:00)
