@@ -25,6 +25,8 @@ concurrency:
 
 jobs:
   collect:
+    # 예약 실행은 Variable COLLECT_ENABLED = true 일 때만 (전환 전 기존 수집과 겹치지 않게). 수동·외부 크론 실행은 항상 허용
+    if: github.event_name == 'workflow_dispatch' || vars.COLLECT_ENABLED == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 350
     steps:
